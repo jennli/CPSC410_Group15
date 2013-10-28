@@ -15,7 +15,8 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 	}
 
 	@Override
-	public void patternMatch() {
+	public Collection<Collection<JavaClass>> patternMatch(
+			JavaProjectBuilder builder) {
 		// TODO Auto-generated method stub
 		Collection<JavaClass> classes = jpb.getClasses();
 		for (JavaClass c : classes) {
@@ -30,5 +31,7 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 				}
 			}
 		}
+		return null;
 	}
+
 }
