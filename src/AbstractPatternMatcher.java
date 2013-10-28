@@ -4,6 +4,6 @@ import com.thoughtworks.qdox.model.JavaClass;
 
 public abstract class AbstractPatternMatcher {
 	
-	public abstract void patternMatch();
-	public Collection<JavaClass> returnMatchedClasses;
+	public abstract Collection<Collection<JavaClass>> patternMatch();
+	
 }
