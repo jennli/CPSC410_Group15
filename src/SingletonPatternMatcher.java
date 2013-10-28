@@ -1,8 +1,10 @@
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaConstructor;
 import com.thoughtworks.qdox.model.JavaMethod;
 
 public class SingletonPatternMatcher extends AbstractPatternMatcher {
@@ -17,20 +19,29 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 	@Override
 	public Collection<Collection<JavaClass>> patternMatch(
 			JavaProjectBuilder builder) {
-		// TODO Auto-generated method stub
+
 		Collection<JavaClass> classes = jpb.getClasses();
 		Collection<JavaClass> oneMatchInstance = new LinkedList<JavaClass>();
 		for (JavaClass c : classes) {
 			System.out.println("\nClass being analyzed: " + c.getName());
 			Collection<JavaMethod> methods = c.getMethods();
-			for (JavaMethod jm : methods) {
-				System.out
-						.println("\t\tMethod being analyzed: " + jm.getName());
-				if (jm.getName().equals("getInstance")) {
+			for (JavaMethod method : methods) {
+				System.out.println("\t\tMethod being analyzed: "
+						+ method.getName());
+				if (method.getName().equals("getInstance")) {
 					System.out.println(c.getName() + " has a possible match");
-					// singletons.add(c);
-					oneMatchInstance.add(c);
-					singletons.add(oneMatchInstance);
+
+					Collection<JavaConstructor> jCon = c.getConstructors();
+					for (JavaConstructor jc : jCon) {
+						List<String> jm = jc.getModifiers();
+						for (String s : jm) {
+							if (s.equals("private")) {
+								oneMatchInstance.add(c);
+								singletons.add(oneMatchInstance);
+							}
+						}
+					}
+
 				}
 			}
 		}
