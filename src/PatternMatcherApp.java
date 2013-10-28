@@ -8,6 +8,7 @@ public class PatternMatcherApp {
 		JavaProjectBuilder builder = new JavaProjectBuilder();
 		builder.addSourceTree(new File("org")); // path to JHotDraw
 		SingletonPatternMatcher spf = new SingletonPatternMatcher(builder);
-		spf.patternMatch(builder);
+		System.out.println("\n There are " + spf.patternMatch(builder).size()
+				+ " instances of the Singleton Pattern in JHotDraw");
 	}
 }

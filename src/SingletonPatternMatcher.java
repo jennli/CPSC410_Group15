@@ -21,7 +21,7 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 			JavaProjectBuilder builder) {
 
 		Collection<JavaClass> classes = jpb.getClasses();
-		Collection<JavaClass> oneMatchInstance = new LinkedList<JavaClass>();
+		
 		for (JavaClass c : classes) {
 			System.out.println("\nClass being analyzed: " + c.getName());
 			Collection<JavaMethod> methods = c.getMethods();
@@ -36,6 +36,7 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 						List<String> jm = jc.getModifiers();
 						for (String s : jm) {
 							if (s.equals("private")) {
+								Collection<JavaClass> oneMatchInstance = new LinkedList<JavaClass>();
 								oneMatchInstance.add(c);
 								singletons.add(oneMatchInstance);
 							}
