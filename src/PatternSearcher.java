@@ -20,7 +20,7 @@ public class PatternSearcher {
 	
 	public void SingletonSearch(){
 		JavaProjectBuilder builder = new JavaProjectBuilder();
-		builder.addSourceTree(new File("/Users/toxa/Desktop/JHotD/src/org")); // path to JHotDraw
+		builder.addSourceTree(new File("org")); // path to JHotDraw
 		Collection<JavaClass> classes = builder.getClasses();
 		for (JavaClass c: classes){
 			List<JavaMethod> methods = c.getMethods();
