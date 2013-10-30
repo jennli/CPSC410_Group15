@@ -1,5 +1,7 @@
-package PatternMatcher;
+
 import java.io.File;
+
+import PatternMatcher.SingletonPatternMatcher;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 
