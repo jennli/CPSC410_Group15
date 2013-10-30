@@ -1,3 +1,4 @@
+package PatternMatcher;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
@@ -72,7 +73,7 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 		}
 		// System.out.println("\n match contains: " + match);
 
-		System.out.println("There are " + match.size() / 2
+		System.out.println("There are " + match.size()/2
 				+ " instances of design pattern.");
 		return match;
 	}

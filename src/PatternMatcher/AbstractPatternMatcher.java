@@ -1,3 +1,4 @@
+package PatternMatcher;
 import java.util.Collection;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;

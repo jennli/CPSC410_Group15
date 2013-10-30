@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/dongningli/Documents/4th_year_2/cs410/qdox-2.0-M1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
