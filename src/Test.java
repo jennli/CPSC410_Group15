@@ -1,6 +1,5 @@
 import java.io.File;
 import java.util.Collection;
-
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
@@ -13,7 +12,8 @@ public class Test {
 	}
 
 	public static void main(String[] args) {
-		//ps.SingletonSearch();
+		// PatternSearcher ps = new PatternSearcher();
+		// ps.SingletonSearch();
 		// create new JavaProjectBuilder
 		JavaProjectBuilder builder = new JavaProjectBuilder();
 		builder.addSourceTree(new File("org")); // path
@@ -26,7 +26,8 @@ public class Test {
 			Collection<JavaMethod> jmethods = c.getMethods();
 			for (JavaMethod jm : jmethods) {
 				System.out.println("The method " + jm.getName()
-						+ " has the following source code:\n " + jm.getSourceCode());
+						+ " has the following source code:\n "
+						+ jm.getSourceCode());
 			}
 
 			Collection<JavaClass> derived = c.getDerivedClasses();
