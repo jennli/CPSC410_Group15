@@ -64,11 +64,16 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 				match.add(subjects);
 				System.out
 						.println("--this is a valid observer instance, added to the result---");
-			} else {
-				System.out.println("This is not a valid instance of observer.");
 			}
+
+			// else {
+			// System.out.println("This is not a valid instance of observer.");
+			// }
 		}
 		// System.out.println("\n match contains: " + match);
+
+		System.out.println("There are " + match.size() / 2
+				+ " instances of design pattern.");
 		return match;
 	}
 
@@ -79,7 +84,6 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 		for (JavaClass s : classes) {
 			for (JavaMethod jm : s.getMethods()) {
 				for (JavaType jt : jm.getParameterTypes()) {
-
 					if (jt.getCanonicalName().equals(c.getCanonicalName())) {
 						// System.out.println("\n\t\t" + s.getName()
 						// + " is a candidate subject of " + c.getName());
@@ -113,10 +117,8 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 			} else if (dc.getInterfaces().size() != 0
 					|| dc.getImplements() != null) { // or get SuperClass?
 				observerDependants.add(dc);
-
 				// checkDerivedClassHierachy(c, derivedClasses, dc);
 			}
-
 		}
 		return observerDependants;
 	}
@@ -152,11 +154,11 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 	// }
 	// }
 
-	// public static void main(String[] args) {
-	// JavaProjectBuilder builder = new JavaProjectBuilder();
-	// builder.addSourceTree(new File("org")); // path to JHotDraw
-	// ObserverPatternMatcher opm = new ObserverPatternMatcher(builder);
-	// opm.patternMatch(builder);
-	//
-	// }
+	public static void main(String[] args) {
+		JavaProjectBuilder builder = new JavaProjectBuilder();
+		builder.addSourceTree(new File("org")); // path to JHotDraw
+		ObserverPatternMatcher opm = new ObserverPatternMatcher(builder);
+		opm.patternMatch(builder);
+
+	}
 }
