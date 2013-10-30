@@ -25,7 +25,7 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 	@Override
 	public Collection<Collection<JavaClass>> patternMatch(JavaProjectBuilder builder) {
 
-		Collection<Collection<JavaClass>> result = new ArrayList();
+		Collection<Collection<JavaClass>> result = new ArrayList<Collection<JavaClass>>();
 
 		Collection<JavaClass> classes = builder.getClasses();
 		for (JavaClass c : classes) {
@@ -64,7 +64,7 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 					} else {
 						// we found the interface! Now add all the classes derived from that interface to the compositeClasses
 						System.out.println(compositeIface);
-						List compositeClasses = compositeIface.getDerivedClasses();
+						List<JavaClass> compositeClasses = compositeIface.getDerivedClasses();
 						System.out.println(compositeClasses);
 						
 						// get all the classes that implement or extend this class because we already know they are a composite
@@ -75,7 +75,7 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 				}
 			}
 		}
-		return null;
+		return result;
 	}
 
 	private JavaClass findCompositeInterface(JavaClass c, String compositeOf) {
