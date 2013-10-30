@@ -1,8 +1,6 @@
 import java.io.File;
 import java.util.Collection;
 
-import PatternMatcher.PatternSearcher;
-
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 import com.thoughtworks.qdox.model.JavaField;
@@ -15,7 +13,6 @@ public class Test {
 	}
 
 	public static void main(String[] args) {
-		PatternSearcher ps = new PatternSearcher();
 		//ps.SingletonSearch();
 		// create new JavaProjectBuilder
 		JavaProjectBuilder builder = new JavaProjectBuilder();
