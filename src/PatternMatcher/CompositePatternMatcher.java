@@ -2,6 +2,7 @@ package PatternMatcher;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
@@ -23,6 +24,7 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public Collection<Collection<JavaClass>> patternMatch(JavaProjectBuilder builder) {
 
@@ -63,15 +65,20 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 						// no idea why the compiler thinks this is dead code
 						System.out.println("Error: Could not find interface \"" + compositeOf  + "\" for the class " + c.getFullyQualifiedName());
 					} else {
+						//System.out.println(compositeIface);
 						// we found the interface! Now add all the classes derived from that interface to the compositeClasses
-						System.out.println(compositeIface);
-						List<JavaClass> compositeClasses = compositeIface.getDerivedClasses();
-						System.out.println(compositeClasses);
+						HashSet<JavaClass> compositeClasses = new HashSet<JavaClass>(compositeIface.getDerivedClasses());
+						//System.out.println(compositeClasses);
 						
 						// get all the classes that implement or extend this class because we already know they are a composite
 						compositeClasses.addAll(c.getDerivedClasses());
-						System.out.println(compositeClasses);
+						//System.out.println(compositeClasses);
 						result.add(compositeClasses);
+						
+						System.out.println("The following classes are part of a Composite Design Pattern:");
+						for (JavaClass composites : compositeClasses) {
+							System.out.println(composites.getName());
+						}
 					}
 				}
 			}
