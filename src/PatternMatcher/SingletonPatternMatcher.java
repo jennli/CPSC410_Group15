@@ -47,7 +47,7 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 							}
 							//check if there are no public modifiers in set, which means all constructors are private
 							if (!setM.contains("public")){
-								Collection<JavaClass> jc = new LinkedList<JavaClass>();
+								Collection<JavaClass> jc = new ArrayList<JavaClass>();
 								jc.add(c);
 								result.add(jc);
 								classNames.add(c.getName());
