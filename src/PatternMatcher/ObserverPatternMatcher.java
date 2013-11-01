@@ -79,7 +79,7 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 		return match;
 	}
 
-	// Finding possible observer class c
+	// Finding subjects of possible observer class c
 	private Collection<JavaClass> getSubject(Collection<JavaClass> classes,
 			JavaClass c) {
 		Collection<JavaClass> subjects = new HashSet<JavaClass>();
