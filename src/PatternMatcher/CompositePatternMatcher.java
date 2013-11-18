@@ -24,7 +24,6 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public Collection<Collection<JavaClass>> patternMatch(JavaProjectBuilder builder) {
 
@@ -56,13 +55,12 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 					//JavaClass compositeIface = builder.getClassByName(compositeOf);
 					
 					JavaClass compositeIface = findCompositeInterface(c, compositeOf);
-					for (int i = 0; i < 3 || compositeIface == null; i++) {
+					for (int i = 0; i < 3 && compositeIface == null; i++) {
 						compositeIface = findCompositeInterface(c.getSuperJavaClass(), compositeOf);
 					}
 					
 
 					if (compositeIface == null) {
-						// no idea why the compiler thinks this is dead code
 						System.out.println("Error: Could not find interface \"" + compositeOf  + "\" for the class " + c.getFullyQualifiedName());
 					} else {
 						//System.out.println(compositeIface);
