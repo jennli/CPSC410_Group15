@@ -1,4 +1,5 @@
 package PatternMatcher;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
@@ -45,17 +46,17 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 					System.out
 							.println("\n One possible instance of observer pattern has the main Listener class"
 									+ c.getName()
-									+ " and consists of sub-observers: ");
+									+ " and consists of concrete observers: ");
 					for (JavaClass x : observer)
 						System.out.println("\t" + x.getName());
-					System.out.println("\nAnd Subjects of: ");
+					System.out.println("\nAnd subjects: ");
 					if (subjects.size() != 0) {
 						for (JavaClass w : subjects) {
 							System.out.println("\t" + w.getName());
 						}
 					} else
 						System.out
-								.println("No subjects found for this observer. ");
+								.println("No subjects found for this observer, this listener doesn't qualify for observer. ");
 				}
 
 			}
@@ -73,12 +74,12 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 		}
 		// System.out.println("\n match contains: " + match);
 
-		System.out.println("There are " + match.size()/2
-				+ " instances of design pattern.");
+		System.out.println("There are " + match.size() / 2
+				+ " instances of observer design pattern.");
 		return match;
 	}
 
-	// Finding Subjects of possible observer class c
+	// Finding subjects of possible observer class c
 	private Collection<JavaClass> getSubject(Collection<JavaClass> classes,
 			JavaClass c) {
 		Collection<JavaClass> subjects = new HashSet<JavaClass>();
