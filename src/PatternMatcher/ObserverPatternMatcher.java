@@ -55,21 +55,6 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 						}
 					}
 				}
-
-				System.out
-						.println("\n One possible instance of observer pattern has the main Listener class "
-								+ c.getName()
-								+ " and consists of concrete observers: ");
-				for (JavaClass x : observer)
-					System.out.println("\t" + x.getName());
-				System.out.println("\nAnd subjects: ");
-				if (subjects.size() != 0) {
-					for (JavaClass w : subjects) {
-						System.out.println("\t" + w.getName());
-					}
-				} else
-					System.out
-							.println("No subjects found for this observer, this listener doesn't qualify for observer. ");
 			}
 		}
 		return new LinkedList<Collection<JavaClass>>();
