@@ -3,6 +3,9 @@ package PatternMatcher;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+
+import util.DesignPattern;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -23,7 +26,7 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 			JavaProjectBuilder builder) {
 		builder = this.jpb;
 
-		Collection<Collection<JavaClass>> match = new HashSet<Collection<JavaClass>>();
+		Collection<DesignPattern> patterns = new LinkedList<DesignPattern>();
 		Collection<JavaClass> classes = builder.getClasses();
 
 		for (JavaClass c : classes) {
@@ -32,129 +35,81 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 
 			// Finding Observer
 			if (c.isInterface() && c.getName().contains("Listener")) {
-				// only consider interface with non-empty derived classes
-				Collection<JavaClass> derivedClasses = c.getDerivedClasses();
-				if (derivedClasses.size() != 0) {
-					observer.add(c);
-					// find all classes extend or implement this observer
-					Collection<JavaClass> observerDependants = getObserverDependants(
-							c, derivedClasses);
-					observer.addAll(observerDependants);
-					// Finding Subject
-					subjects = getSubject(classes, c);
+				if (c.getDerivedClasses().size() != 0) {
 
-					System.out
-							.println("\n One possible instance of observer pattern has the main Listener class"
-									+ c.getName()
-									+ " and consists of concrete observers: ");
-					for (JavaClass x : observer)
-						System.out.println("\t" + x.getName());
-					System.out.println("\nAnd subjects: ");
-					if (subjects.size() != 0) {
-						for (JavaClass w : subjects) {
-							System.out.println("\t" + w.getName());
+					// finding subjects
+					for (JavaClass s : classes) {
+						for (JavaMethod jm : s.getMethods()) {
+							for (JavaType jt : jm.getParameterTypes()) {
+								if (jt.getCanonicalName().equals(
+										c.getCanonicalName())) {
+									while (notIncludedInSubjects(subjects, s)) {
+										subjects.add(s);
+										patterns.add(getObserverPattern(c, s));
+									}
+
+								}
+
+							}
+
 						}
-					} else
-						System.out
-								.println("No subjects found for this observer, this listener doesn't qualify for observer. ");
-				}
-
-			}
-
-			if (observer.size() != 0 && subjects.size() != 0) {
-				match.add(observer);
-				match.add(subjects);
-				System.out
-						.println("--this is a valid observer instance, added to the result---");
-			}
-
-			// else {
-			// System.out.println("This is not a valid instance of observer.");
-			// }
-		}
-		// System.out.println("\n match contains: " + match);
-
-		System.out.println("There are " + match.size() / 2
-				+ " instances of observer design pattern.");
-		return match;
-	}
-
-	// Finding subjects of possible observer class c
-	private Collection<JavaClass> getSubject(Collection<JavaClass> classes,
-			JavaClass c) {
-		Collection<JavaClass> subjects = new HashSet<JavaClass>();
-		for (JavaClass s : classes) {
-			for (JavaMethod jm : s.getMethods()) {
-				for (JavaType jt : jm.getParameterTypes()) {
-					if (jt.getCanonicalName().equals(c.getCanonicalName())) {
-						// System.out.println("\n\t\t" + s.getName()
-						// + " is a candidate subject of " + c.getName());
-						// System.out.println("\t\t method: " + jm.getName()
-						// + "; type: " + jt.getCanonicalName() + "\n");
-						while (!subjects.contains(s)) {
-							subjects.add(s);
-							// System.out.println("add " + s.getName()
-							// + " to subjects");
-						}
-
 					}
-
 				}
 
+				System.out
+						.println("\n One possible instance of observer pattern has the main Listener class "
+								+ c.getName()
+								+ " and consists of concrete observers: ");
+				for (JavaClass x : observer)
+					System.out.println("\t" + x.getName());
+				System.out.println("\nAnd subjects: ");
+				if (subjects.size() != 0) {
+					for (JavaClass w : subjects) {
+						System.out.println("\t" + w.getName());
+					}
+				} else
+					System.out
+							.println("No subjects found for this observer, this listener doesn't qualify for observer. ");
 			}
 		}
-		return subjects;
+		return new LinkedList<Collection<JavaClass>>();
 	}
 
-	// select the derived classes that participate in the observer pattern
-	private Collection<JavaClass> getObserverDependants(JavaClass c,
-			Collection<JavaClass> derivedClasses) {
-		Collection<JavaClass> observerDependants = new HashSet<JavaClass>();
-		for (JavaClass dc : derivedClasses) {
-			// look for sub-Listeners, add to the dependent lit
-			if (dc.isInterface() && dc.getImplements().contains(c)) {
-				observerDependants.add(dc);
+	private boolean notIncludedInSubjects(Collection<JavaClass> subjects,
+			JavaClass s) {
 
-				// Look for realizations of interface c and their subclasses
-			} else if (dc.getInterfaces().size() != 0
-					|| dc.getImplements() != null) { // or get SuperClass?
-				observerDependants.add(dc);
-				// checkDerivedClassHierachy(c, derivedClasses, dc);
+		if (subjects.contains(s)) {
+			return true;
+		}
+
+		for (JavaClass jc : subjects) {
+			if (jc.getDerivedClasses().contains(s)) {
+				return true;
 			}
 		}
-		return observerDependants;
+		return false;
 	}
 
-	// private void checkDerivedClassHierachy(JavaClass c,
-	// Collection<JavaClass> derivedClasses, JavaClass dc) {
-	// for (JavaClass otherdc : derivedClasses) {
-	//
-	// if (dc.getImplements().size() != 0) {
-	// if (dc.getInterfaces().contains(otherdc)) {
-	// System.out.println(dc.getName()
-	// + " NOT an interface, implements "
-	// + otherdc.getName()
-	// + " which is another derived class of "
-	// + c.getName());
-	// }
-	// } else if (dc.getSuperClass() != null) {
-	//
-	// if (dc.getSuperClass().equals(otherdc)) {
-	//
-	// System.out
-	// .println(dc.getName()
-	// + " extends "
-	// + otherdc.getName()
-	// + " which is another derived (non-interface)class of "
-	// + c.getName());
-	// }
-	// }
-	// }
-	// if (dc.isInner()) {
-	// System.out.println(dc.getName() + " is an inner class of"
-	// + dc.getDeclaringClass().getName());
-	// }
-	// }
+	/**
+	 * Finds all the classes involved in the observer pattern.
+	 * 
+	 * @param observer
+	 *            the observer listener interface on top of the observer
+	 *            hierarchy
+	 * @param subject
+	 *            the subject on the top of the subject hierarchy that registers
+	 *            the observer
+	 * @return the set of classes participating in the visitor pattern
+	 */
+	private DesignPattern getObserverPattern(JavaClass observer,
+			JavaClass subject) {
+		DesignPattern pattern = new DesignPattern("Observer");
+		pattern.addHierarchy(observer);
+		pattern.addHierarchy(subject);
+		pattern.addConnection(subject, observer, "register");
+
+		return pattern;
+	}
 
 	public static void main(String[] args) {
 		JavaProjectBuilder builder = new JavaProjectBuilder();
