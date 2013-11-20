@@ -25,13 +25,25 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import org.apache.commons.collections15.Transformer;
+
 import PatternMatcher.*;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.TreeLayout;
+import edu.uci.ics.jung.graph.DelegateForest;
+import edu.uci.ics.jung.graph.Forest;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.decorators.EdgeShape;
+import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.renderers.Renderer.VertexLabel.Position;
 import util.Connection;
 import util.DesignPattern;
+
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.io.File;
@@ -121,22 +133,43 @@ public class VisualizerGUI extends JFrame {
 
 	public void addPatternInstance(DesignPattern pattern, JTabbedPane parent) {
 
-		JPanel patternPanel = new JPanel();
-
 		// TODO logic to display the design pattern onto the JPanel
-		// Set<Connection> edges = pattern.getConnections();
-		/*
-		 * extra JTree stuff DefaultMutableTreeNode top = new
-		 * DefaultMutableTreeNode("JHotDraw"); JTree tree = new JTree(top);
-		 * 
-		 * for (Connection c : edges) { DefaultMutableTreeNode parent = new
-		 * DefaultMutableTreeNode(c.from); DefaultMutableTreeNode child = new
-		 * DefaultMutableTreeNode(c.to);
-		 * 
-		 * }
-		 */
+		Set<Connection> edges = pattern.getConnections();
 
-		parent.addTab(pattern.getInstanceName(), patternPanel);
+		Forest<JavaClass, String> g = new DelegateForest<JavaClass, String>();
+
+		int i = 1;
+		for (Connection c : edges) {
+			//g.addVertex(c.from);
+			//g.addVertex(c.to);
+			g.addEdge(c.name + i++, c.to, c.from);
+
+		}
+
+		Layout<JavaClass, String> layout = new TreeLayout<JavaClass, String>(g, 300, 300);
+
+		VisualizationViewer<JavaClass, String> vv = new VisualizationViewer<JavaClass, String>(layout, new Dimension(300,300));
+
+		vv.getRenderer().getVertexLabelRenderer().setPosition(Position.CNTR);
+		vv.getRenderContext().setVertexLabelTransformer(new Transformer<JavaClass, String>() {
+			@Override
+			public String transform(JavaClass c) {
+				return c.getName();
+			}
+
+		});
+		/*
+	    // change the shape of the vertex
+	    vv.getRenderContext().setVertexShapeTransformer(new Transformer<JavaClass, Shape>() {
+			@Override
+			public Shape transform(JavaClass arg0) {
+				return new Rectangle2D.Double(0, 0, 60, 60);
+			}
+	    });
+		 */
+		vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller<String>());
+		vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line());
+		parent.addTab(String.valueOf(parent.getTabCount() + 1), new GraphZoomScrollPane(vv));
 	}
 
 	// onclick Singleton tab this method gets called
