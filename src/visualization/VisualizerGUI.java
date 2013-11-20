@@ -51,7 +51,7 @@ public class VisualizerGUI extends JFrame {
 	private final JPanel singletonSub = new JPanel();
 
 	JavaProjectBuilder builder = new JavaProjectBuilder();
-	
+	String text = null;
 	/**
 	 * Launch the application.
 	 */
@@ -105,7 +105,14 @@ public class VisualizerGUI extends JFrame {
 		};
 
 		tabbedPane.addChangeListener(changeListener);
-
+		
+        builder.addSourceTree(new File("org")); // path to JHotDraw
+        SingletonPatternMatcher spm = new SingletonPatternMatcher();   
+        //=====HACK, To be changed later (assumption that the result is only one class)
+        for(JavaClass cl:  spm.patternMatch(builder)){
+        	text = cl.getName();
+        }
+        //=====
 	}
 
 	public void addPattern(DesignPattern pattern) {
@@ -151,21 +158,12 @@ public class VisualizerGUI extends JFrame {
 	        int y = h/4;  
 	        int rectW = w*3/8;  
 	        int rectH = h/4;  
-	        String text = null;
+	        //String text = null;
 	        Color c = new Color(135,206,250);
 	        g.setColor(c);
 	        g.fillRect(x, y, rectW, rectH);
 	        g.setColor(Color.BLACK);
 	        g.drawRect(x, y, rectW, rectH);  
-	        
-	        builder.addSourceTree(new File("org")); // path to JHotDraw
-	        SingletonPatternMatcher spm = new SingletonPatternMatcher();
-	        
-	        //=====HACK, To be changed later (assumption that the result is only one class)
-	        for(JavaClass cl:  spm.patternMatch(builder)){
-	        	text = cl.getName();
-	        }
-	        //=====
 	        
 	        Font font = g2.getFont().deriveFont(16f);  
 	        g2.setFont(font);  
