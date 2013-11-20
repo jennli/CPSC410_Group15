@@ -3,8 +3,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import util.DesignPattern;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -12,7 +15,7 @@ import com.thoughtworks.qdox.model.JavaConstructor;
 import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMethod;
 
-public class SingletonPatternMatcher {
+public class SingletonPatternMatcher extends AbstractPatternMatcher {
 
 	Set<String> classNames = new HashSet<String>();
 
@@ -28,7 +31,7 @@ public class SingletonPatternMatcher {
 	}
 
 	
-	  public List<JavaClass> patternMatch(JavaProjectBuilder builder){
+	  public Collection<DesignPattern> patternMatch(JavaProjectBuilder builder){
 	
 		List<JavaClass> result = new ArrayList<JavaClass>();
 		Collection<JavaClass> classes = builder.getClasses();
@@ -71,6 +74,7 @@ public class SingletonPatternMatcher {
 			}
 
 
-		return result;
+		//return result;
+		return new LinkedList<DesignPattern>(); // XXX: change this
 	}
 }

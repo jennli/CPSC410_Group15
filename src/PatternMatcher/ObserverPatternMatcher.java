@@ -25,7 +25,7 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 	}
 
 	@Override
-	public Collection<Collection<JavaClass>> patternMatch(
+	public Collection<DesignPattern> patternMatch(
 			JavaProjectBuilder builder) {
 		builder = this.jpb;
 
@@ -42,7 +42,7 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 
 		}
 
-		return new LinkedList<Collection<JavaClass>>();
+		return observers;
 	}
 
 	/**

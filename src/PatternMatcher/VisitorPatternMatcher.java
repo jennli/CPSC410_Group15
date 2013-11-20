@@ -14,7 +14,7 @@ import com.thoughtworks.qdox.model.JavaType;
 public class VisitorPatternMatcher extends AbstractPatternMatcher {
 	
 	@Override
-	public Collection<Collection<JavaClass>> patternMatch(
+	public Collection<DesignPattern> patternMatch(
 			JavaProjectBuilder builder) {
 		Collection<DesignPattern> patterns = new LinkedList<DesignPattern>();
 		Collection<JavaClass> classes = builder.getClasses();
@@ -22,9 +22,7 @@ public class VisitorPatternMatcher extends AbstractPatternMatcher {
 			if (isVisitor(c))
 				patterns.add(getVisitorPattern(classes, c));
 		}
-		Collection<Collection<JavaClass>> r = new LinkedList<Collection<JavaClass>>();
-		return r;
-		//return patterns;
+		return patterns;
 	}
 	
 	/**
@@ -77,9 +75,9 @@ public class VisitorPatternMatcher extends AbstractPatternMatcher {
 		JavaProjectBuilder builder = new JavaProjectBuilder();
 		builder.addSourceTree(new File("org"));
 		
-		Collection<Collection<JavaClass>> patterns = (new VisitorPatternMatcher()).patternMatch(builder);
-		for (Collection<JavaClass> pattern : patterns) {
-			for (JavaClass c : pattern) {
+		Collection<DesignPattern> patterns = (new VisitorPatternMatcher()).patternMatch(builder);
+		for (DesignPattern pattern : patterns) {
+			for (JavaClass c : pattern.getNodes()) {
 				System.out.println(c.getName() + " participates in the visitor pattern");
 			}
 		}

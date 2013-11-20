@@ -1,11 +1,12 @@
 package PatternMatcher;
 import java.util.Collection;
 
+import util.DesignPattern;
+
 import com.thoughtworks.qdox.JavaProjectBuilder;
-import com.thoughtworks.qdox.model.JavaClass;
 
 public abstract class AbstractPatternMatcher {
 	
-	public abstract Collection<Collection<JavaClass>> patternMatch(JavaProjectBuilder builder);
+	public abstract Collection<DesignPattern> patternMatch(JavaProjectBuilder builder);
 	
 }

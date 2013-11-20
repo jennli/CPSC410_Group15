@@ -3,7 +3,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+
+import util.DesignPattern;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -25,7 +28,7 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 	}
 
 	@Override
-	public Collection<Collection<JavaClass>> patternMatch(JavaProjectBuilder builder) {
+	public Collection<DesignPattern> patternMatch(JavaProjectBuilder builder) {
 
 		Collection<Collection<JavaClass>> result = new ArrayList<Collection<JavaClass>>();
 
@@ -81,7 +84,8 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 				}
 			}
 		}
-		return result;
+		//return result;
+		return new LinkedList<DesignPattern>(); // XXX: change this
 	}
 
 	private JavaClass findCompositeInterface(JavaClass c, String compositeOf) {
