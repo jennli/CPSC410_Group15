@@ -18,7 +18,8 @@ import com.thoughtworks.qdox.model.JavaMethod;
 public class SingletonPatternMatcher extends AbstractPatternMatcher {
 
 	Set<String> classNames = new HashSet<String>();
-
+	Collection<DesignPattern> singletons = new LinkedList<DesignPattern>();
+	
 	public SingletonPatternMatcher(){
 
 	}
@@ -27,13 +28,15 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 		JavaProjectBuilder builder = new JavaProjectBuilder();
 		builder.addSourceTree(new File("org")); // path to JHotDraw
 		SingletonPatternMatcher cpm = new SingletonPatternMatcher();
-		cpm.patternMatch(builder);
+		for (DesignPattern d: cpm.patternMatch(builder)){
+			System.out.println(d.getInstanceName());
+		}
 	}
 
 	
 	  public Collection<DesignPattern> patternMatch(JavaProjectBuilder builder){
 	
-		List<JavaClass> result = new ArrayList<JavaClass>();
+		//List<JavaClass> result = new ArrayList<JavaClass>();
 		Collection<JavaClass> classes = builder.getClasses();
 		for (JavaClass c: classes){
 			//this set is later used to store modifiers of constructors
@@ -56,7 +59,8 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 							}
 							//check if there are no public modifiers in set, which means all constructors are private
 							if (!setM.contains("public")){
-								result.add(c);
+								DesignPattern dp = new DesignPattern("Singleton", c.getName());
+								singletons.add(dp);
 								classNames.add(c.getName());
 							}
 						}
@@ -75,6 +79,6 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 
 
 		//return result;
-		return new LinkedList<DesignPattern>(); // XXX: change this
+		return singletons; // XXX: change this
 	}
 }
