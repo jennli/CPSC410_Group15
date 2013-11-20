@@ -30,7 +30,7 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 	@Override
 	public Collection<DesignPattern> patternMatch(JavaProjectBuilder builder) {
 
-		Collection<Collection<JavaClass>> result = new ArrayList<Collection<JavaClass>>();
+		Collection<DesignPattern> result = new ArrayList<DesignPattern>();
 
 		Collection<JavaClass> classes = builder.getClasses();
 		for (JavaClass c : classes) {
@@ -66,6 +66,11 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 					if (compositeIface == null) {
 						System.out.println("Error: Could not find interface \"" + compositeOf  + "\" for the class " + c.getFullyQualifiedName());
 					} else {
+						DesignPattern dp = new DesignPattern("Composite Pattern");
+						dp.addHierarchy(compositeIface);
+						dp.addHierarchy(c);
+						result.add(dp);
+						/*
 						//System.out.println(compositeIface);
 						// we found the interface! Now add all the classes derived from that interface to the compositeClasses
 						HashSet<JavaClass> compositeClasses = new HashSet<JavaClass>(compositeIface.getDerivedClasses());
@@ -80,12 +85,12 @@ public class CompositePatternMatcher extends AbstractPatternMatcher {
 						for (JavaClass composites : compositeClasses) {
 							System.out.println(composites.getName());
 						}
+						*/
 					}
 				}
 			}
 		}
-		//return result;
-		return new LinkedList<DesignPattern>(); // XXX: change this
+		return result;
 	}
 
 	private JavaClass findCompositeInterface(JavaClass c, String compositeOf) {
