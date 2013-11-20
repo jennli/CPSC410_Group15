@@ -3,7 +3,6 @@ package PatternMatcher;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import util.DesignPattern;
@@ -30,7 +29,6 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 		builder = this.jpb;
 
 		for (JavaClass c : allClasses) {
-			Collection<JavaClass> subjects = new HashSet<JavaClass>();
 			// Finding Observer
 			if (c.isInterface() && c.getName().contains("Listener")) {
 				if (c.getDerivedClasses().size() != 0) {
