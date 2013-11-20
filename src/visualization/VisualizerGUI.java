@@ -46,6 +46,10 @@ public class VisualizerGUI extends JFrame {
 	//sub-tabs
 	private final JPanel subPane1 = new JPanel();
 	private final JPanel subPane2 = new JPanel();
+	private final JPanel subPane3 = new JPanel();
+	private final JPanel subPane4 = new JPanel();
+	private final JPanel subPane5 = new JPanel();
+	
 
 	//sub-tab for singleton
 	private final JPanel singletonSub = new JPanel();
@@ -89,7 +93,9 @@ public class VisualizerGUI extends JFrame {
 		
 		observerPane.addTab("#1",subPane1);
 		observerPane.addTab("#2", subPane2);
-
+		observerPane.addTab("#3", subPane3);
+		observerPane.addTab("#4", subPane4);
+		observerPane.addTab("#5", subPane5);
 
 		ChangeListener changeListener = new ChangeListener() {
 
