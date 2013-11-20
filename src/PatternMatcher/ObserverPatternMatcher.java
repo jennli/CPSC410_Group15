@@ -3,6 +3,7 @@ package PatternMatcher;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import util.DesignPattern;
@@ -15,10 +16,12 @@ import com.thoughtworks.qdox.model.JavaType;
 public class ObserverPatternMatcher extends AbstractPatternMatcher {
 
 	JavaProjectBuilder jpb = new JavaProjectBuilder();
-	Collection<Collection<JavaClass>> Observers = new HashSet<Collection<JavaClass>>();
+	static Collection<DesignPattern> observers = new LinkedList<DesignPattern>();
+	Collection<JavaClass> allClasses;
 
 	public ObserverPatternMatcher(JavaProjectBuilder jpb) {
 		this.jpb = jpb;
+		allClasses = jpb.getClasses();
 	}
 
 	@Override
@@ -26,41 +29,31 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 			JavaProjectBuilder builder) {
 		builder = this.jpb;
 
-		Collection<DesignPattern> patterns = new LinkedList<DesignPattern>();
-		Collection<JavaClass> classes = builder.getClasses();
-
-		for (JavaClass c : classes) {
-			Collection<JavaClass> observer = new HashSet<JavaClass>();
+		for (JavaClass c : allClasses) {
 			Collection<JavaClass> subjects = new HashSet<JavaClass>();
-
 			// Finding Observer
 			if (c.isInterface() && c.getName().contains("Listener")) {
 				if (c.getDerivedClasses().size() != 0) {
-
-					// finding subjects
-					for (JavaClass s : classes) {
-						for (JavaMethod jm : s.getMethods()) {
-							for (JavaType jt : jm.getParameterTypes()) {
-								if (jt.getCanonicalName().equals(
-										c.getCanonicalName())) {
-									while (notIncludedInSubjects(subjects, s)) {
-										subjects.add(s);
-										patterns.add(getObserverPattern(c, s));
-									}
-
-								}
-
-							}
-
-						}
-					}
+					DesignPattern dp = getObserverPattern(c);
+					if (dp != null)
+						observers.add(dp);
 				}
 			}
+
 		}
+
 		return new LinkedList<Collection<JavaClass>>();
 	}
 
-	private boolean notIncludedInSubjects(Collection<JavaClass> subjects,
+	/**
+	 * checks whether the given subject class s has already been added to the
+	 * instance of the pattern
+	 * 
+	 * @param subjects
+	 * @param s
+	 * @return
+	 */
+	private boolean includedInSubjects(Collection<JavaClass> subjects,
 			JavaClass s) {
 
 		if (subjects.contains(s)) {
@@ -84,14 +77,39 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 	 * @param subject
 	 *            the subject on the top of the subject hierarchy that registers
 	 *            the observer
-	 * @return the set of classes participating in the visitor pattern
+	 * @return the set of classes participating in the observer pattern
 	 */
-	private DesignPattern getObserverPattern(JavaClass observer,
-			JavaClass subject) {
-		DesignPattern pattern = new DesignPattern("Observer");
+	private DesignPattern getObserverPattern(JavaClass observer) {
+
+		DesignPattern pattern = new DesignPattern("Observer",
+				observer.getName());
 		pattern.addHierarchy(observer);
-		pattern.addHierarchy(subject);
-		pattern.addConnection(subject, observer, "register");
+		Collection<JavaClass> subjects = new HashSet<JavaClass>();
+		// finding subjects
+		for (JavaClass s : allClasses) {
+			for (JavaMethod jm : s.getMethods()) {
+				for (JavaType jt : jm.getParameterTypes()) {
+					if (jt.getCanonicalName().equals(
+							observer.getCanonicalName())) {
+
+						while (!includedInSubjects(subjects, s)) {
+							subjects.add(s);
+							pattern.addHierarchy(s);
+							pattern.addConnection(s, observer, "register");
+						}
+					}
+				}
+			}
+		}
+		if (subjects.size() == 0)
+			return null;
+
+		// debug
+		Collection<JavaClass> nodes = pattern.getNodes();
+		for (JavaClass jc : nodes) {
+			System.out.println(jc.getName());
+		}
+		System.out.println();
 
 		return pattern;
 	}
@@ -101,6 +119,11 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 		builder.addSourceTree(new File("org")); // path to JHotDraw
 		ObserverPatternMatcher opm = new ObserverPatternMatcher(builder);
 		opm.patternMatch(builder);
+		System.out.println("Found " + getObserverCount()
+				+ " observer patterns.");
+	}
 
+	public static int getObserverCount() {
+		return observers.size();
 	}
 }
