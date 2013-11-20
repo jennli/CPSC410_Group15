@@ -5,5 +5,5 @@ package visualization;
  * result
  */
 public class Visualizer {
-
+	
 }

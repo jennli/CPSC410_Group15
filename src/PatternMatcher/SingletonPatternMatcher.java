@@ -1,8 +1,8 @@
 package PatternMatcher;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,19 +12,25 @@ import com.thoughtworks.qdox.model.JavaConstructor;
 import com.thoughtworks.qdox.model.JavaField;
 import com.thoughtworks.qdox.model.JavaMethod;
 
-public class SingletonPatternMatcher extends AbstractPatternMatcher {
+public class SingletonPatternMatcher {
 
 	Set<String> classNames = new HashSet<String>();
 
 	public SingletonPatternMatcher(){
 
 	}
+	
+	public static void main(String[] args){
+		JavaProjectBuilder builder = new JavaProjectBuilder();
+		builder.addSourceTree(new File("org")); // path to JHotDraw
+		SingletonPatternMatcher cpm = new SingletonPatternMatcher();
+		cpm.patternMatch(builder);
+	}
 
-
-	@Override
-	public Collection<Collection<JavaClass>> patternMatch(JavaProjectBuilder builder) {
-
-		Collection<Collection<JavaClass>> result = new ArrayList<Collection<JavaClass>>();
+	
+	  public List<JavaClass> patternMatch(JavaProjectBuilder builder){
+	
+		List<JavaClass> result = new ArrayList<JavaClass>();
 		Collection<JavaClass> classes = builder.getClasses();
 		for (JavaClass c: classes){
 			//this set is later used to store modifiers of constructors
@@ -47,9 +53,7 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 							}
 							//check if there are no public modifiers in set, which means all constructors are private
 							if (!setM.contains("public")){
-								Collection<JavaClass> jc = new ArrayList<JavaClass>();
-								jc.add(c);
-								result.add(jc);
+								result.add(c);
 								classNames.add(c.getName());
 							}
 						}
