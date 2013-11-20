@@ -14,6 +14,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JPanel;
@@ -23,7 +25,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import PatternMatcher.SingletonPatternMatcher;
+import PatternMatcher.*;
 
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -35,21 +37,9 @@ import java.awt.font.LineMetrics;
 import java.io.File;
 
 public class VisualizerGUI extends JFrame {
+
 	//Common tab
 	private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-	//4 main tabs
-	private final JTabbedPane observerPane = new JTabbedPane(JTabbedPane.TOP);
-	private final JTabbedPane singletonPane = new JTabbedPane(JTabbedPane.TOP);
-	private final JTabbedPane visitorPane = new JTabbedPane(JTabbedPane.TOP);
-	private final JTabbedPane compositePane = new JTabbedPane(JTabbedPane.TOP);
-
-	//sub-tabs
-	private final JPanel subPane1 = new JPanel();
-	private final JPanel subPane2 = new JPanel();
-	private final JPanel subPane3 = new JPanel();
-	private final JPanel subPane4 = new JPanel();
-	private final JPanel subPane5 = new JPanel();
-	
 
 	//sub-tab for singleton
 	private final JPanel singletonSub = new JPanel();
@@ -81,22 +71,6 @@ public class VisualizerGUI extends JFrame {
 
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
-		//adding 4 tabs to main
-		tabbedPane.addTab("Observer Pattern", observerPane);
-		tabbedPane.addTab("Singleton Pattern", singletonPane);
-		tabbedPane.addTab("Visitor Pattern", visitorPane);
-		tabbedPane.addTab("Composite Pattern", compositePane);
-
-
-		//adding sub-tabs
-		singletonPane.addTab("#1", singletonSub);
-		
-		observerPane.addTab("#1",subPane1);
-		observerPane.addTab("#2", subPane2);
-		observerPane.addTab("#3", subPane3);
-		observerPane.addTab("#4", subPane4);
-		observerPane.addTab("#5", subPane5);
-
 		ChangeListener changeListener = new ChangeListener() {
 
 			public void stateChanged(ChangeEvent changeEvent) {
@@ -111,23 +85,42 @@ public class VisualizerGUI extends JFrame {
 		};
 
 		tabbedPane.addChangeListener(changeListener);
-		
+
         builder.addSourceTree(new File("org")); // path to JHotDraw
-        SingletonPatternMatcher spm = new SingletonPatternMatcher();   
+        SingletonPatternMatcher spm = new SingletonPatternMatcher();
+        CompositePatternMatcher cpm = new CompositePatternMatcher();
+        ObserverPatternMatcher opm = new ObserverPatternMatcher(builder);
+        VisitorPatternMatcher vpm = new VisitorPatternMatcher();
+
+        addPattern(spm.patternMatch(builder), "Singleton");
+        addPattern(cpm.patternMatch(builder), "Composite");
+        addPattern(opm.patternMatch(builder), "Observer");
+        addPattern(vpm.patternMatch(builder), "Visitor");
+
         //=====HACK, To be changed later (assumption that the result is only one class)
-        for(JavaClass cl:  spm.patternMatch(builder)){
-        	text = cl.getName();
-        }
+        //for(JavaClass cl:  spm.patternMatch(builder)){
+        //	text = cl.getName();
+        //}
         //=====
 	}
 
-	public void addPattern(DesignPattern pattern) {
+	public void addPattern(Collection<DesignPattern> instances, String name) {
+		JTabbedPane patPane = new JTabbedPane(JTabbedPane.TOP);
+
+		// add sub-tabs for each pattern instance
+		for (DesignPattern i : instances) {
+			addPatternInstance(i, patPane);
+		}
+
+		tabbedPane.addTab(name, patPane);
+	}
+	
+	public void addPatternInstance(DesignPattern pattern, JTabbedPane parent) {
 
 		JPanel patternPanel = new JPanel();
 
-
 		// TODO logic to display the design pattern onto the JPanel
-		Set<Connection> edges = pattern.getConnections();
+		//Set<Connection> edges = pattern.getConnections();
 
 		/* extra JTree stuff
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("JHotDraw");
@@ -140,7 +133,7 @@ public class VisualizerGUI extends JFrame {
 		}
 		 */
 
-		tabbedPane.addTab(pattern.getPatternName(), patternPanel);
+		parent.addTab(pattern.getInstanceName(), patternPanel);
 	}
 
 	//onclick Singleton tab this method gets called
