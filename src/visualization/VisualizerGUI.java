@@ -127,7 +127,7 @@ public class VisualizerGUI extends JFrame {
 		}
 		 */
 
-		tabbedPane.addTab(pattern.getName(), patternPanel);
+		tabbedPane.addTab(pattern.getPatternName(), patternPanel);
 	}
 
 	//onclick Singleton tab this method gets called
