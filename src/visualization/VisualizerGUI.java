@@ -46,12 +46,16 @@ public class VisualizerGUI extends JFrame {
 	//sub-tabs
 	private final JPanel subPane1 = new JPanel();
 	private final JPanel subPane2 = new JPanel();
+	private final JPanel subPane3 = new JPanel();
+	private final JPanel subPane4 = new JPanel();
+	private final JPanel subPane5 = new JPanel();
+	
 
 	//sub-tab for singleton
 	private final JPanel singletonSub = new JPanel();
 
 	JavaProjectBuilder builder = new JavaProjectBuilder();
-	
+	String text = null;
 	/**
 	 * Launch the application.
 	 */
@@ -89,7 +93,9 @@ public class VisualizerGUI extends JFrame {
 		
 		observerPane.addTab("#1",subPane1);
 		observerPane.addTab("#2", subPane2);
-
+		observerPane.addTab("#3", subPane3);
+		observerPane.addTab("#4", subPane4);
+		observerPane.addTab("#5", subPane5);
 
 		ChangeListener changeListener = new ChangeListener() {
 
@@ -105,7 +111,14 @@ public class VisualizerGUI extends JFrame {
 		};
 
 		tabbedPane.addChangeListener(changeListener);
-
+		
+        builder.addSourceTree(new File("org")); // path to JHotDraw
+        SingletonPatternMatcher spm = new SingletonPatternMatcher();   
+        //=====HACK, To be changed later (assumption that the result is only one class)
+        for(JavaClass cl:  spm.patternMatch(builder)){
+        	text = cl.getName();
+        }
+        //=====
 	}
 
 	public void addPattern(DesignPattern pattern) {
@@ -151,21 +164,12 @@ public class VisualizerGUI extends JFrame {
 	        int y = h/4;  
 	        int rectW = w*3/8;  
 	        int rectH = h/4;  
-	        String text = null;
+	        //String text = null;
 	        Color c = new Color(135,206,250);
 	        g.setColor(c);
 	        g.fillRect(x, y, rectW, rectH);
 	        g.setColor(Color.BLACK);
 	        g.drawRect(x, y, rectW, rectH);  
-	        
-	        builder.addSourceTree(new File("org")); // path to JHotDraw
-	        SingletonPatternMatcher spm = new SingletonPatternMatcher();
-	        
-	        //=====HACK, To be changed later (assumption that the result is only one class)
-	        for(JavaClass cl:  spm.patternMatch(builder)){
-	        	text = cl.getName();
-	        }
-	        //=====
 	        
 	        Font font = g2.getFont().deriveFont(16f);  
 	        g2.setFont(font);  
