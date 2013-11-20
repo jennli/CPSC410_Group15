@@ -14,20 +14,15 @@ import com.thoughtworks.qdox.model.JavaType;
 
 public class ObserverPatternMatcher extends AbstractPatternMatcher {
 
-	JavaProjectBuilder jpb = new JavaProjectBuilder();
 	static Collection<DesignPattern> observers = new LinkedList<DesignPattern>();
 	Collection<JavaClass> allClasses;
 
-	public ObserverPatternMatcher(JavaProjectBuilder jpb) {
-		this.jpb = jpb;
-		allClasses = jpb.getClasses();
+	public ObserverPatternMatcher() {
 	}
 
 	@Override
-	public Collection<DesignPattern> patternMatch(
-			JavaProjectBuilder builder) {
-		builder = this.jpb;
-
+	public Collection<DesignPattern> patternMatch(JavaProjectBuilder builder) {
+		allClasses = builder.getClasses();
 		for (JavaClass c : allClasses) {
 			// Finding Observer
 			if (c.isInterface() && c.getName().contains("Listener")) {
@@ -115,7 +110,7 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 	public static void main(String[] args) {
 		JavaProjectBuilder builder = new JavaProjectBuilder();
 		builder.addSourceTree(new File("org")); // path to JHotDraw
-		ObserverPatternMatcher opm = new ObserverPatternMatcher(builder);
+		ObserverPatternMatcher opm = new ObserverPatternMatcher();
 		opm.patternMatch(builder);
 		System.out.println("Found " + getObserverCount()
 				+ " observer patterns.");
