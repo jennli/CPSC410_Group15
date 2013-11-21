@@ -32,33 +32,13 @@ public class VisualizerGUI extends JFrame {
 	// Common tab
 	private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
-	// sub-tab for singleton
-	private final JPanel singletonSub = new JPanel();
-
 	JavaProjectBuilder builder = new JavaProjectBuilder();
-	String text = null;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					VisualizerGUI frame = new VisualizerGUI();
-					frame.setVisible(true);
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	public VisualizerGUI() {
 		setTitle("Design Pattern Analyzer");
 		setBounds(300, 150, 600, 550);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setExtendedState(MAXIMIZED_BOTH);
 
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
@@ -72,13 +52,6 @@ public class VisualizerGUI extends JFrame {
 		addPattern(cpm.patternMatch(builder), "Composite");
 		addPattern(opm.patternMatch(builder), "Observer");
 		addPattern(vpm.patternMatch(builder), "Visitor");
-
-		// =====HACK, To be changed later (assumption that the result is only
-		// one class)
-		// for(JavaClass cl: spm.patternMatch(builder)){
-		// text = cl.getName();
-		// }
-		// =====
 	}
 
 	public void addPattern(Collection<DesignPattern> instances, String name) {
@@ -95,10 +68,17 @@ public class VisualizerGUI extends JFrame {
 	public void addPatternInstance(DesignPattern pattern, JTabbedPane parent) {
 
 		final mxGraph graph = new mxGraph();
-		mxGraphComponent graphComponent = new mxGraphComponent(graph);
-		Object graphParent = graph.getDefaultParent();
-
 		
+		graph.setAllowDanglingEdges(false);
+		graph.setCellsEditable(false);
+		graph.setEdgeLabelsMovable(false);
+		graph.setCellsLocked(true);
+		graph.setCellsMovable(false);
+		graph.setVertexLabelsMovable(false);
+		
+		Object graphParent = graph.getDefaultParent();
+		
+		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -146,15 +126,10 @@ public class VisualizerGUI extends JFrame {
 				@Override
 				public void invoke(Object arg0, mxEventObject arg1) {
 					graph.getModel().endUpdate();
-					
 				}
-				
 			});
-			
 			morph.startAnimation();
 		}
-		
-		//mxGraphComponent graphComponent = new mxGraphComponent(graph);
 
 		parent.addTab(String.valueOf(parent.getTabCount() + 1), graphComponent);
 	}
