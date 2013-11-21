@@ -71,6 +71,8 @@ public class DesignPattern {
 	 * @param root the class or interface at which the hierarchy begins
 	 */
 	public void addHierarchy(JavaClass root) {
+		System.out.println(patternName + "\n");
+		System.out.println(root);
 		nodes.add(root);
 
 		/*
@@ -83,15 +85,16 @@ public class DesignPattern {
 			
 			// if root is an interface, we need to add an "implements" connection
 			for (JavaClass i : c.getImplementedInterfaces()) {
-				if (i.equals(root))
+				if (i.equals(root) || derived.contains(i))
 					connections.add(new Connection(c, i, "implements"));
 			}
 
 			// discard classes that aren't part of the hierarchy
 			JavaClass sc = c.getSuperJavaClass();
-			if (c == null || !derived.contains(sc))
+			
+			if (sc == null || !derived.contains(sc)) {
 				continue;
-
+			}
 			nodes.add(c);
 			connections.add(new Connection(c, sc, "extends"));
 		}
