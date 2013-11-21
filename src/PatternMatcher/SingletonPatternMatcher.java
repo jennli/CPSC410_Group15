@@ -60,6 +60,7 @@ public class SingletonPatternMatcher extends AbstractPatternMatcher {
 							//check if there are no public modifiers in set, which means all constructors are private
 							if (!setM.contains("public")){
 								DesignPattern dp = new DesignPattern("Singleton", c.getName());
+								dp.addNode(c);
 								singletons.add(dp);
 								classNames.add(c.getName());
 							}
