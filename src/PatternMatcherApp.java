@@ -1,17 +1,24 @@
 
-import java.io.File;
+import java.awt.EventQueue;
 
-import PatternMatcher.SingletonPatternMatcher;
-
-import com.thoughtworks.qdox.JavaProjectBuilder;
+import visualization.VisualizerGUI;
 
 public class PatternMatcherApp {
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
-		JavaProjectBuilder builder = new JavaProjectBuilder();
-		builder.addSourceTree(new File("org")); // path to JHotDraw
-		SingletonPatternMatcher spf = new SingletonPatternMatcher();
-		spf.patternMatch(builder);
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					VisualizerGUI frame = new VisualizerGUI();
+					frame.setVisible(true);
 
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 }
