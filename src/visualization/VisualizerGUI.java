@@ -1,13 +1,11 @@
 package visualization;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import util.Connection;
@@ -27,11 +25,13 @@ import com.mxgraph.view.mxGraph;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
 
+@SuppressWarnings("serial")
 public class VisualizerGUI extends JFrame {
 
 	// Common tab
 	private final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 
+	// Source code parser
 	JavaProjectBuilder builder = new JavaProjectBuilder();
 
 	public VisualizerGUI() {
@@ -66,9 +66,10 @@ public class VisualizerGUI extends JFrame {
 	}
 
 	public void addPatternInstance(DesignPattern pattern, JTabbedPane parent) {
-
+		// create the graph data structure
 		final mxGraph graph = new mxGraph();
 		
+		// set the graph to be uneditable
 		graph.setAllowDanglingEdges(false);
 		graph.setCellsEditable(false);
 		graph.setEdgeLabelsMovable(false);
@@ -76,35 +77,41 @@ public class VisualizerGUI extends JFrame {
 		graph.setCellsMovable(false);
 		graph.setVertexLabelsMovable(false);
 		
-		Object graphParent = graph.getDefaultParent();
-		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		
+		Object graphParent = graph.getDefaultParent();
+		
+		// create a map of all the vertices in the graph so we can add edges between them and new vertices
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		for (Connection c : pattern.getConnections()) {
+			// JGraph uses a transaction-based model
 			graph.getModel().beginUpdate();
 			try {
+				// check if the map contains a vertex for the class
 				Object v1 = map.get(c.to.getName());
 				if (v1 == null) {
+					// if not, create a new vertex in the graph and put it in the map
 					v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 80, 30);
 					map.put(c.to.getName(), v1);
 				}
-				
+				// same as above for the second vertex
 				Object v2 = map.get(c.from.getName());
 				if (v2 == null) {
 					v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 80, 30);
 					map.put(c.from.getName(), v2);
 				}
+				// create an edge between the vertices
 				graph.insertEdge(graphParent, null, c.name, v1, v2, "startArrow=arrow_classic;endArrow=none");
 			} finally {
 				graph.getModel().endUpdate();
 			}
 		}
 		
+		// this handles the case where there are no hierarchical connections between the classes (eg Singleton pattern)
 		if (pattern.getConnections().size() == 0) {
-			graph.getModel().beginUpdate();
 			for (JavaClass c : pattern.getNodes()) {
+				graph.getModel().beginUpdate();
 				try {
 					graph.insertVertex(graphParent, null, c.getName(), 20, 20, 80, 30);
 				} finally {
@@ -113,16 +120,16 @@ public class VisualizerGUI extends JFrame {
 			}
 		}
 
+		// layout the graph as a tree
 		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
 		
 		graph.getModel().beginUpdate();
-		
 		try {
-			layout.execute(graph.getDefaultParent()); // Run the layout on the facade.
+			// Run the layout on the graph.
+			layout.execute(graph.getDefaultParent());
 		} finally {
 			mxMorphing morph = new mxMorphing(graphComponent, 20, 1.2, 20);
 			morph.addListener(mxEvent.DONE, new mxIEventListener() {
-
 				@Override
 				public void invoke(Object arg0, mxEventObject arg1) {
 					graph.getModel().endUpdate();
@@ -131,7 +138,8 @@ public class VisualizerGUI extends JFrame {
 			morph.startAnimation();
 		}
 
-		parent.addTab(String.valueOf(parent.getTabCount() + 1), graphComponent);
+		// Finally add the finished graph to the GUI (as a subtab of its respective design pattern tab)
+		parent.addTab("#" + String.valueOf(parent.getTabCount() + 1), graphComponent);
 	}
 
 }

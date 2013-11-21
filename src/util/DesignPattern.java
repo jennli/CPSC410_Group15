@@ -71,32 +71,24 @@ public class DesignPattern {
 	 * @param root the class or interface at which the hierarchy begins
 	 */
 	public void addHierarchy(JavaClass root) {
-		System.out.println(patternName + "\n");
-		System.out.println(root);
 		nodes.add(root);
 
-		/*
-		 * XXX: QDox doesn't allow me to get *onlu* direct sub-classes/implementors,
-		 * so the hierarchy is built by considering each "derived class" independently
-		 * and finding it's parent.
-		 */
 		List<JavaClass> derived = root.getDerivedClasses();
+		
+		// only add classes that are a part of the hierarchy
 		for (JavaClass c : derived) {
-			
-			// if root is an interface, we need to add an "implements" connection
+			// add an "implements" connection for classes that implement the root, and classes which implement those classes
 			for (JavaClass i : c.getImplementedInterfaces()) {
 				if (i.equals(root) || derived.contains(i))
 					connections.add(new Connection(c, i, "implements"));
 			}
 
-			// discard classes that aren't part of the hierarchy
+			// build the class hierarchy
 			JavaClass sc = c.getSuperJavaClass();
-			
-			if (sc == null || !derived.contains(sc)) {
-				continue;
+			if (sc != null && derived.contains(sc)) {
+				nodes.add(c);
+				connections.add(new Connection(c, sc, "extends"));
 			}
-			nodes.add(c);
-			connections.add(new Connection(c, sc, "extends"));
 		}
 	}
 }

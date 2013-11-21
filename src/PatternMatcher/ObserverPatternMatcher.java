@@ -88,7 +88,7 @@ public class ObserverPatternMatcher extends AbstractPatternMatcher {
 						while (!includedInSubjects(subjects, s)) {
 							subjects.add(s);
 							pattern.addHierarchy(s);
-							pattern.addConnection(s, observer, "register");
+							pattern.addConnection(s, observer, "registers");
 						}
 					}
 				}
