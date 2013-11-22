@@ -15,12 +15,9 @@ import PatternMatcher.ObserverPatternMatcher;
 import PatternMatcher.SingletonPatternMatcher;
 import PatternMatcher.VisitorPatternMatcher;
 
+import com.mxgraph.layout.mxFastOrganicLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.swing.util.mxMorphing;
-import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.view.mxGraph;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -48,10 +45,10 @@ public class VisualizerGUI extends JFrame {
 		ObserverPatternMatcher opm = new ObserverPatternMatcher();
 		VisitorPatternMatcher vpm = new VisitorPatternMatcher();
 
-		addPattern(spm.patternMatch(builder), "Singleton");
 		addPattern(cpm.patternMatch(builder), "Composite");
 		addPattern(opm.patternMatch(builder), "Observer");
 		addPattern(vpm.patternMatch(builder), "Visitor");
+		addPattern(spm.patternMatch(builder), "Singleton");
 	}
 
 	public void addPattern(Collection<DesignPattern> instances, String name) {
@@ -76,7 +73,6 @@ public class VisualizerGUI extends JFrame {
 		graph.setCellsLocked(true);
 		graph.setCellsMovable(false);
 		graph.setVertexLabelsMovable(false);
-		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		
 		Object graphParent = graph.getDefaultParent();
 		
@@ -108,17 +104,21 @@ public class VisualizerGUI extends JFrame {
 				if (v2 == null) {
 					if (pattern.getPatternName().equals("Observer")){
 						v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 185, 42, "shadow=true;fontColor=BLACK;fontSize=12");
-					}
-					else if(pattern.getPatternName().equals("Visitor")){
+					} else if (pattern.getPatternName().equals("Visitor")) {
 						v2 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 170, 42, "fillColor=#ffb6c1;shadow=true;fontColor=BLACK;fontSize=12");
-					}
-					else{
+					} else {
 						v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 180, 42, "fillColor=#7fffd4;shadow=true;fontColor=BLACK;fontSize=12");
 					}
 					map.put(c.from.getName(), v2);
 				}
 				// create an edge between the vertices
-				graph.insertEdge(graphParent, null, c.name, v1, v2, "startArrow=arrow_classic;endArrow=none");
+				if (c.name.equals("implements")) {
+					//graph.insertEdge(graphParent, null, c.name, v1, v2, "startArrow=arrow_classic;endArrow=none;dashed=1");
+					graph.insertEdge(graphParent, null, c.name, v2, v1, "startArrow=arrow_classic;dashed=1");
+				} else {
+					//graph.insertEdge(graphParent, null, c.name, v1, v2, "startArrow=arrow_classic;endArrow=none");
+					graph.insertEdge(graphParent, null, c.name, v2, v1, "startArrow=arrow_classic");
+				}
 			} finally {
 				graph.getModel().endUpdate();
 			}
@@ -130,30 +130,26 @@ public class VisualizerGUI extends JFrame {
 				graph.getModel().beginUpdate();
 				try {
 					graph.insertVertex(graphParent, null, c.getName(), 500, 500, 180, 42, "fillColor=#ffe4b5;shadow=true;fontColor=BLACK;fontSize=12");
-					
 				} finally {
 					graph.getModel().endUpdate();
 				}
 			}
 		}
 
-		// layout the graph as a tree
-		mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
-		
-		graph.getModel().beginUpdate();
-		try {
-			// Run the layout on the graph.
-			layout.execute(graph.getDefaultParent());
-		} finally {
-			mxMorphing morph = new mxMorphing(graphComponent, 20, 1.2, 20);
-			morph.addListener(mxEvent.DONE, new mxIEventListener() {
-				@Override
-				public void invoke(Object arg0, mxEventObject arg1) {
-					graph.getModel().endUpdate();
-				}
-			});
-			morph.startAnimation();
+		if (pattern.getConnections().size() > 0) {
+			// layout the graph as a tree
+			mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
+			//layout.setInterRankCellSpacing(70);
+			//layout.setIntraCellSpacing(100);
+			//layout.setDisableEdgeStyle(false);
+			//layout.setParallelEdgeSpacing(10);
+			layout.execute(graphParent);
+		} else {
+			new mxFastOrganicLayout(graph).execute(graphParent);
 		}
+		
+		// create a SWING component for the graph
+		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 
 		// Finally add the finished graph to the GUI (as a subtab of its respective design pattern tab)
 		parent.addTab("#" + String.valueOf(parent.getTabCount() + 1), graphComponent);
