@@ -129,7 +129,7 @@ public class VisualizerGUI extends JFrame {
 			for (JavaClass c : pattern.getNodes()) {
 				graph.getModel().beginUpdate();
 				try {
-					graph.insertVertex(graphParent, null, c.getName(), 500, 500, 180, 42, "fillColor=#ffe4b5;shadow=true;fontColor=BLACK;fontSize=12");
+					graph.insertVertex(graphParent, null, c.getName(), 500, 250, 180, 42, "fillColor=#ffe4b5;shadow=true;fontColor=BLACK;fontSize=12");
 				} finally {
 					graph.getModel().endUpdate();
 				}
