@@ -76,7 +76,6 @@ public class VisualizerGUI extends JFrame {
 		graph.setCellsLocked(true);
 		graph.setCellsMovable(false);
 		graph.setVertexLabelsMovable(false);
-		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		
 		Object graphParent = graph.getDefaultParent();
@@ -92,13 +91,30 @@ public class VisualizerGUI extends JFrame {
 				Object v1 = map.get(c.to.getName());
 				if (v1 == null) {
 					// if not, create a new vertex in the graph and put it in the map
-					v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 80, 30);
+					if (pattern.getPatternName().equals("Observer")){
+						v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 185, 42, "shadow=true;fontColor=BLACK;fontSize=12");
+					}
+					else if (pattern.getPatternName().equals("Visitor")){
+						v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 170, 42, "fillColor=#ffb6c1;shadow=true;fontColor=BLACK;fontSize=12");
+					}
+					else{
+						v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 180, 42, "fillColor=#7fffd4;shadow=true;fontColor=BLACK;fontSize=12");
+					}
 					map.put(c.to.getName(), v1);
 				}
+
 				// same as above for the second vertex
 				Object v2 = map.get(c.from.getName());
 				if (v2 == null) {
-					v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 80, 30);
+					if (pattern.getPatternName().equals("Observer")){
+						v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 185, 42, "shadow=true;fontColor=BLACK;fontSize=12");
+					}
+					else if(pattern.getPatternName().equals("Visitor")){
+						v2 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 170, 42, "fillColor=#ffb6c1;shadow=true;fontColor=BLACK;fontSize=12");
+					}
+					else{
+						v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 180, 42, "fillColor=#7fffd4;shadow=true;fontColor=BLACK;fontSize=12");
+					}
 					map.put(c.from.getName(), v2);
 				}
 				// create an edge between the vertices
@@ -113,7 +129,8 @@ public class VisualizerGUI extends JFrame {
 			for (JavaClass c : pattern.getNodes()) {
 				graph.getModel().beginUpdate();
 				try {
-					graph.insertVertex(graphParent, null, c.getName(), 20, 20, 80, 30);
+					graph.insertVertex(graphParent, null, c.getName(), 500, 500, 180, 42, "fillColor=#ffe4b5;shadow=true;fontColor=BLACK;fontSize=12");
+					
 				} finally {
 					graph.getModel().endUpdate();
 				}
