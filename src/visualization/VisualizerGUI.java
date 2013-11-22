@@ -21,6 +21,7 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.JavaClass;
+import java.awt.Font;
 
 @SuppressWarnings("serial")
 public class VisualizerGUI extends JFrame {
@@ -36,6 +37,7 @@ public class VisualizerGUI extends JFrame {
 		setBounds(300, 150, 600, 550);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(MAXIMIZED_BOTH);
+		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 25));
 
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
@@ -53,6 +55,7 @@ public class VisualizerGUI extends JFrame {
 
 	public void addPattern(Collection<DesignPattern> instances, String name) {
 		JTabbedPane patPane = new JTabbedPane(JTabbedPane.TOP);
+		patPane.setFont(new Font("Tahoma", Font.PLAIN, 30));
 
 		// add sub-tabs for each pattern instance
 		for (DesignPattern i : instances) {
