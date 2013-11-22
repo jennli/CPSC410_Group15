@@ -62,6 +62,13 @@ public class VisualizerGUI extends JFrame {
 		tabbedPane.addTab(name, patPane);
 	}
 
+	public static String getNodeName(JavaClass c) {
+		String ret = "";
+		if (c.isInterface())
+			ret = "<<interface>>\n";
+		return ret + c.getName();
+	}
+
 	public void addPatternInstance(DesignPattern pattern, JTabbedPane parent) {
 		// create the graph data structure
 		final mxGraph graph = new mxGraph();
@@ -86,15 +93,16 @@ public class VisualizerGUI extends JFrame {
 				// check if the map contains a vertex for the class
 				Object v1 = map.get(c.to.getName());
 				if (v1 == null) {
+					String name = getNodeName(c.to);
 					// if not, create a new vertex in the graph and put it in the map
 					if (pattern.getPatternName().equals("Observer")){
-						v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 185, 42, "shadow=true;fontColor=BLACK;fontSize=12");
+						v1 = graph.insertVertex(graphParent, null, name, 20, 20, 185, 42, "shadow=true;fontColor=BLACK;fontSize=12");
 					}
 					else if (pattern.getPatternName().equals("Visitor")){
-						v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 170, 42, "fillColor=#ffb6c1;shadow=true;fontColor=BLACK;fontSize=12");
+						v1 = graph.insertVertex(graphParent, null, name, 20, 20, 170, 42, "fillColor=#ffb6c1;shadow=true;fontColor=BLACK;fontSize=12");
 					}
 					else{
-						v1 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 180, 42, "fillColor=#7fffd4;shadow=true;fontColor=BLACK;fontSize=12");
+						v1 = graph.insertVertex(graphParent, null, name, 20, 20, 180, 42, "fillColor=#7fffd4;shadow=true;fontColor=BLACK;fontSize=12");
 					}
 					map.put(c.to.getName(), v1);
 				}
@@ -102,12 +110,13 @@ public class VisualizerGUI extends JFrame {
 				// same as above for the second vertex
 				Object v2 = map.get(c.from.getName());
 				if (v2 == null) {
+					String name = getNodeName(c.from);
 					if (pattern.getPatternName().equals("Observer")){
-						v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 185, 42, "shadow=true;fontColor=BLACK;fontSize=12");
+						v2 = graph.insertVertex(graphParent, null, name, 240, 150, 185, 42, "shadow=true;fontColor=BLACK;fontSize=12");
 					} else if (pattern.getPatternName().equals("Visitor")) {
-						v2 = graph.insertVertex(graphParent, null, c.to.getName(), 20, 20, 170, 42, "fillColor=#ffb6c1;shadow=true;fontColor=BLACK;fontSize=12");
+						v2 = graph.insertVertex(graphParent, null, name, 20, 20, 170, 42, "fillColor=#ffb6c1;shadow=true;fontColor=BLACK;fontSize=12");
 					} else {
-						v2 = graph.insertVertex(graphParent, null, c.from.getName(), 240, 150, 180, 42, "fillColor=#7fffd4;shadow=true;fontColor=BLACK;fontSize=12");
+						v2 = graph.insertVertex(graphParent, null, name, 240, 150, 180, 42, "fillColor=#7fffd4;shadow=true;fontColor=BLACK;fontSize=12");
 					}
 					map.put(c.from.getName(), v2);
 				}
